@@ -1,24 +1,35 @@
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import React from 'react';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
 interface Props {
-    label?: string;
-    position?: 'left' | 'right';
+    label: string;
+    position: 'left' | 'right';
     count: number;
     setCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function FAB({ label = "Incrementar", position = 'right', count, setCount }: Props) {
+function FAB({ label, position, count, setCount }: Props) {
     return (
         <TouchableOpacity 
             style={[styles.floatingButton, 
               position === 'right' ? styles.positionRight : styles.positionLeft]}
-            onPress={() => setCount(count + 1)}
+            onPress={() => setCount(position === 'right' ? count + 1 : count - 1)}
             onLongPress={() => setCount(0)}
         >
-            <Text style={styles.buttonText}>{label ? `${label} +1` : "+1"}</Text>
-
+            <Text style={styles.buttonText}>{label}</Text>
         </TouchableOpacity>
+    );
+}
+
+export default function App() {
+    const [count, setCount] = React.useState<number>(0);
+
+    return (
+        <View style={appStyles.container}>
+            <Text style={appStyles.counter}>{count}</Text>
+            <FAB label="Decrementar" position="left" count={count} setCount={setCount} />
+            <FAB label="Incrementar" position="right" count={count} setCount={setCount} />
+        </View>
     );
 }
 
@@ -40,9 +51,23 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     positionRight: {
-        right: 20,
+        right: 60,
     },
     positionLeft: {
-        left: 20,
+        left: 60,
+    },
+});
+
+const appStyles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
+    },
+    counter: {
+        fontSize: 48,
+        fontWeight: 'bold',
+        marginBottom: 20,
     },
 });
